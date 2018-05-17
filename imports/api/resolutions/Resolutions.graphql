@@ -1,0 +1,12 @@
+#[To do]
+#Nombre
+#CreatedDate
+
+type Resolutions{
+  _id:String!
+  name:String!
+}
+
+type Mutation{
+  createResolution(name: String!):Resolutions
+}
