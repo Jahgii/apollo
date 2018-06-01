@@ -11,7 +11,7 @@ type Query {
   hi:String
   resolutions:[Resolutions]
 }
-`;
+`
 
 const typeDefs = [
   testSchema,

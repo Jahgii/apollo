@@ -1,41 +1,43 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
+
+import { withApollo } from "react-apollo"
+
 import ResolutionForm from './ResolutionForm';
+import RegisterForm from './RegisterForm';
+import LoginForm from './LoginForm';
 
-const App =({data})=>{
-  if(data.loading) return null;
-  return(
-  <div>
-  <h1>{data.hi}</h1>
-  <ResolutionForm/>
-  <ul>
-      {data.resolutions.map(resolution =>(
-        <li key={resolution._id}>{resolution.name}</li>
-      ))}
-  </ul>
-  </div>
-)
+const App = ({ loading, resolutions, client }) => {
+  if (loading) return null;
+  return (
+    <div>
+      <button onClick={() => {
+        Meteor.logout();
+        client.resetStore();
+      }}>Logout</button>
+      <RegisterForm client={client}/>
+      <LoginForm client={client}/>
+      <ResolutionForm />
+
+      <ul>
+        {resolutions.map(resolution => (
+          <li key={resolution._id}>{resolution.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
 };
-const hiQuery=gql`
-{
-  hi
-  resolutions{
-    _id
-    name
+
+const resolutionsQuery = gql`
+  query Resolutions {
+    resolutions {
+      _id
+      name
+    }
   }
-}
 `;
-export default graphql(hiQuery)(App);
 
-// const App =({data}) => <h1> {data.hi}</h1>;
-// const hiQuery = gql`
-// {
-// hi
-// }
-// `;
-// export default graphql(hiQuery)(App);
-
-//const App=()=><h1>Hello</h1>;
-
-//export default App;
+export default graphql(resolutionsQuery, {
+  props: ({ data }) => ({ ...data })
+})(withApollo(App));
